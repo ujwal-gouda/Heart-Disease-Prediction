@@ -1,0 +1,174 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#eef2ff,#f8fafc);
+    min-height:100vh;
+}
+
+/* Card */
+
+.card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+/* Heading */
+
+h1{
+    font-weight:700;
+    color:#1f2937;
+}
+
+.text-muted{
+    font-size:15px;
+}
+
+/* Labels */
+
+.form-label{
+    font-weight:600;
+    color:#374151;
+    margin-bottom:6px;
+}
+
+/* Inputs */
+
+.form-control,
+.form-select{
+
+    border-radius:12px;
+    padding:12px;
+
+    border:1px solid #d1d5db;
+
+    transition:.25s;
+
+}
+
+.form-control:focus,
+.form-select:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+
+}
+
+/* Button */
+
+.btn-primary{
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(90deg,#2563eb,#1d4ed8);
+
+    transition:.3s;
+
+    font-weight:600;
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 20px rgba(37,99,235,.25);
+
+}
+
+/* Alerts */
+
+.alert{
+
+    border-radius:15px;
+
+    padding:20px;
+
+    border:none;
+
+}
+
+.alert-danger{
+
+    background:#ffe6e6;
+
+    color:#b91c1c;
+
+}
+
+.alert-success{
+
+    background:#e8fff0;
+
+    color:#15803d;
+
+}
+
+/* Divider */
+
+hr{
+
+    opacity:.15;
+
+}
+
+/* Responsive */
+
+@media(max-width:991px){
+
+    .col-lg-4{
+
+        margin-bottom:20px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .card-body{
+
+        padding:25px;
+
+    }
+
+    h1{
+
+        font-size:30px;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    body{
+
+        padding:15px;
+
+    }
+
+    h1{
+
+        font-size:26px;
+
+    }
+
+    .btn{
+
+        font-size:16px;
+
+    }
+
+}
