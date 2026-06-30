@@ -1,14 +1,15 @@
+from pathlib import Path
+
 from flask import Flask, render_template, request
-from tensorflow.keras.models import load_model
-import pandas as pd
-import numpy as np
 import joblib
+import pandas as pd
 
 app = Flask(__name__)
 
-# Load model and scaler only once
-model = load_model("heart.keras")
-scaler = joblib.load("scaler.joblib")
+BASE_DIR = Path(__file__).resolve().parent
+
+# Load the trained scikit-learn pipeline only once
+model = joblib.load(BASE_DIR / "model.joblib")
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -36,106 +37,37 @@ def home():
         restingECG = request.form["restingECG"]
 
         # ==========================
-        # ST Slope Encoding
+        # Build Feature DataFrame
         # ==========================
 
-        stSlope_num = {
-            "Down": 0,
-            "Flat": 1,
-            "Up": 2
-        }[stSlope]
-
-        # ==========================
-        # Chest Pain One-Hot Encoding
-        # ==========================
-
-        chestPain_arr = {
-            "ASY": [1, 0, 0, 0],
-            "ATA": [0, 1, 0, 0],
-            "NAP": [0, 0, 1, 0],
-            "TA":  [0, 0, 0, 1]
-        }[chestPainType]
-
-        # ==========================
-        # Resting ECG One-Hot Encoding
-        # ==========================
-
-        restingECG_arr = {
-            "LVH": [1, 0, 0],
-            "Normal": [0, 1, 0],
-            "ST": [0, 0, 1]
-        }[restingECG]
-
-        # ==========================
-        # Feature Vector
-        # ==========================
-
-        features = [
-
-            age,
-
-            1 if sex == "Male" else 0,
-
-            restingBP,
-
-            cholesterol,
-
-            fastingBS,
-
-            maxHR,
-
-            1 if exerciseAngina == "No" else 0,
-
-            oldPeak,
-
-            stSlope_num
-
-        ]
-
-        features += chestPain_arr
-        features += restingECG_arr
-
-        # ==========================
-        # DataFrame
-        # ==========================
-
-        sampleDF = pd.DataFrame(
-            [features],
-            columns=[
-                "Age",
-                "Sex",
-                "RestingBP",
-                "Cholesterol",
-                "FastingBS",
-                "MaxHR",
-                "ExerciseAngina",
-                "Oldpeak",
-                "ST_Slope",
-                "ChestPainType_ASY",
-                "ChestPainType_ATA",
-                "ChestPainType_NAP",
-                "ChestPainType_TA",
-                "RestingECG_LVH",
-                "RestingECG_Normal",
-                "RestingECG_ST"
-            ]
-        )
-
-        # ==========================
-        # Scale Features
-        # ==========================
-
-        sampleDF = scaler.transform(sampleDF)
+        sampleDF = pd.DataFrame([
+            {
+                "Age": age,
+                "Sex": 1 if sex == "Male" else 0,
+                "RestingBP": restingBP,
+                "Cholesterol": cholesterol,
+                "FastingBS": fastingBS,
+                "MaxHR": maxHR,
+                "ExerciseAngina": 1 if exerciseAngina == "Yes" else 0,
+                "Oldpeak": oldPeak,
+                "ST_Slope": {
+                    "Down": 0,
+                    "Flat": 1,
+                    "Up": 2
+                }[stSlope],
+                "ChestPainType": chestPainType,
+                "RestingECG": restingECG
+            }
+        ])
 
         # ==========================
         # Predict
         # ==========================
 
-        predict = model.predict(sampleDF, verbose=0)
+        predict = model.predict(sampleDF)
+        probability = round(float(model.predict_proba(sampleDF)[0][1]) * 100, 2)
 
-        probability = round(float(predict[0][0]) * 100, 2)
-
-        if predict[0][0] >= 0.5:
+        if predict[0] == 1:
             prediction = "Have Heart Disease"
             prediction_class = "danger"
         else:
