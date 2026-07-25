@@ -2,11 +2,6 @@
 
 A Machine Learning-powered web application that predicts the likelihood of heart disease based on a patient's medical information. This project demonstrates an end-to-end machine learning workflow, from data preprocessing and model training to deployment as a live web application using Flask.
 
-## Live Demo
-
-**Try the application here:**
-https://heart-disease-prediction-x9xd.onrender.com/
-
 ## Overview
 
 Heart disease is one of the leading causes of death worldwide. Early prediction can help individuals seek timely medical attention. This application uses a trained machine learning model to estimate the likelihood of heart disease based on user-provided health parameters.
